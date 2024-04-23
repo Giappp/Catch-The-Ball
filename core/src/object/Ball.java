@@ -40,6 +40,12 @@ public class Ball {
     }
 
     public boolean overlaps(Rectangle catchField) {
-        throw new NotImplementedException();
+//        if(catchField.getX() <= this.startPosition.x &&
+//                this.startPosition.x <= catchField.getX() + catchField.getWidth()
+//        && this.startPosition.y >= (catchField.getHeight() + catchField.y) / 2){
+//            return true;
+//        }
+//        return false;
+        return catchField.contains(new Circle(startPosition.x,startPosition.y,radius));
     }
 }

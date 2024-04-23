@@ -51,12 +51,12 @@ public class GameScreen implements Screen {
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
+        camera.setToOrtho(false, 1280, 800);
 
         // the catch field
         catchField = new Rectangle();
         catchField.x = 800 / 2 - 64 / 2; // center the catcher horizontally
-        catchField.y = -150; // bottom left corner of the bucket is 20 pixels above
+        catchField.y = 0; // bottom left corner of the bucket is 20 pixels above
         catchField.width = 293;
         catchField.height = 320;
 
@@ -68,9 +68,9 @@ public class GameScreen implements Screen {
 
     private void spawnBall() {
         Ball ball = new Ball();
-        ball.setStartPosition(MathUtils.random(0, 800 - 64),448);
+        ball.setStartPosition(MathUtils.random(0, 800 - 64),800);
         ball.setRadius(64);
-        ball.setSpeed(300);
+        ball.setSpeed(100);
         balls.add(ball);
         lastDropTime = TimeUtils.nanoTime();
     }
@@ -93,7 +93,7 @@ public class GameScreen implements Screen {
         // begin a new batch and draw the bucket and
         // all drops
         game.batch.begin();
-        game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, 480);
+        game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, 800);
         game.batch.draw(catcherImage, catchField.x, catchField.y, catchField.width, catchField.height);
         for (Ball ball : balls) {
             game.batch.draw(dropImage, ball.getStartPosition().x, ball.getStartPosition().y);
@@ -121,8 +121,8 @@ public class GameScreen implements Screen {
         // make sure the bucket stays within the screen bounds
         if (catchField.x < 0)
             catchField.x = 0;
-        if (catchField.x > Gdx.graphics.getWidth() - catchField.width)
-            catchField.x = Gdx.graphics.getWidth() - catchField.width;
+        if (catchField.x > 1280 - catchField.width)
+            catchField.x = 1280 - catchField.width;
 
         // check if we need to create a new raindrop
         if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
@@ -132,6 +132,7 @@ public class GameScreen implements Screen {
         while (iter.hasNext()) {
             Ball ball = iter.next();
             ball.getStartPosition().y -= ball.getSpeed() * Gdx.graphics.getDeltaTime();
+            System.out.println(ball.getStartPosition().x + " " + ball.getStartPosition().y);
             if (ball.getStartPosition().y + 64 < 0)
                 iter.remove();
             if (ball.overlaps(catchField)) {
