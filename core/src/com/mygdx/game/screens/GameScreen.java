@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.screens;
 
 import java.util.Iterator;
 
@@ -9,22 +9,24 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.mygdx.game.MyGame;
 import object.Ball;
 
 public class GameScreen implements Screen {
     private static final float DEFAULT_SPEED = 200;
     private boolean isSpeedUp = false;
     private static final float SPEED_UP_MULTIPLIER = 2.0f;
-    final Drop game;
+    final Game game;
+
+    private static final SpriteBatch batch = new SpriteBatch();
 
     Texture dropImage;
     Texture catcherImage;
@@ -37,7 +39,7 @@ public class GameScreen implements Screen {
     long lastDropTime;
     int dropsGathered;
 
-    public GameScreen(final Drop game) {
+    public GameScreen(final Game game) {
         this.game = game;
 
         shapeRenderer = new ShapeRenderer();
@@ -51,11 +53,11 @@ public class GameScreen implements Screen {
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 1280, 800);
+        camera.setToOrtho(false, 1980, 1080);
 
         // the catch field
         catchField = new Rectangle();
-        catchField.x = 800 / 2 - 64 / 2; // center the catcher horizontally
+        catchField.x = camera.viewportWidth / 2 - 64 / 2; // center the catcher horizontally
         catchField.y = 0; // bottom left corner of the bucket is 20 pixels above
         catchField.width = 293;
         catchField.height = 320;
@@ -88,17 +90,17 @@ public class GameScreen implements Screen {
 
         // tell the SpriteBatch to render in the
         // coordinate system specified by the camera.
-        game.batch.setProjectionMatrix(camera.combined);
+        batch.setProjectionMatrix(camera.combined);
 
         // begin a new batch and draw the bucket and
         // all drops
-        game.batch.begin();
-        game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, 800);
-        game.batch.draw(catcherImage, catchField.x, catchField.y, catchField.width, catchField.height);
+        batch.begin();
+        MyGame.smallFont.draw(batch, "Drops Collected: " + dropsGathered, 0, 800);
+        batch.draw(catcherImage, catchField.x, catchField.y, catchField.width, catchField.height);
         for (Ball ball : balls) {
-            game.batch.draw(dropImage, ball.getStartPosition().x, ball.getStartPosition().y);
+            batch.draw(dropImage, ball.getStartPosition().x, ball.getStartPosition().y);
         }
-        game.batch.end();
+        batch.end();
 
         if (Gdx.input.isKeyPressed(Keys.LEFT)) {
             if(isSpeedUp){
@@ -132,10 +134,12 @@ public class GameScreen implements Screen {
         while (iter.hasNext()) {
             Ball ball = iter.next();
             ball.getStartPosition().y -= ball.getSpeed() * Gdx.graphics.getDeltaTime();
-            System.out.println(ball.getStartPosition().x + " " + ball.getStartPosition().y);
+            //System.out.println("Ball position: " + ball.getStartPosition().x + " " + ball.getStartPosition().y);
             if (ball.getStartPosition().y + 64 < 0)
                 iter.remove();
             if (ball.overlaps(catchField)) {
+                System.out.println("Ball position: " + ball.getStartPosition().x + " " + ball.getStartPosition().y);
+                System.out.println("Catch Field position: " + catchField.x + " " + catchField.y);
                 dropsGathered++;
 //                dropSound.play();
                 iter.remove();
