@@ -70,9 +70,9 @@ public class GameScreen implements Screen {
 
     private void spawnBall() {
         Ball ball = new Ball();
-        ball.setStartPosition(MathUtils.random(0, 800 - 64),800);
+        ball.setStartPosition(MathUtils.random(0, Gdx.graphics.getWidth() - 64),Gdx.graphics.getHeight());
         ball.setRadius(64);
-        ball.setSpeed(100);
+        ball.setSpeed(200);
         balls.add(ball);
         lastDropTime = TimeUtils.nanoTime();
     }
@@ -83,7 +83,7 @@ public class GameScreen implements Screen {
         // arguments to clear are the red, green
         // blue and alpha component in the range [0,1]
         // of the color to be used to clear the screen.
-        ScreenUtils.clear(0, 0, 0.2f, 1);
+        ScreenUtils.clear(0, 0, 0, 1);
 
         // tell the camera to update its matrices.
         camera.update();
