@@ -8,32 +8,23 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Loads the collision fixtures defined with the Physics Body Editor
- * application. You only need to give it a body and the corresponding fixture
- * name, and it will attach these fixtures to your body.
- *
- * @author Aurelien Ribon | http://www.aurelienribon.com
+ * Loads the collision fixtures defined with the Physics Body Editor application.
+ * You only need to give it a body and the corresponding fixture name, and it will attach these fixtures to your body.
  */
 public class BodyEditorLoader {
-
-	// Model
-	private final Model model;
-
 	// Reusable stuff
-	private final List<Vector2> vectorPool = new ArrayList<>();
+	private final Model model;
+	private final List<Vector2> vectorPool = new ArrayList<Vector2>();
 	private final PolygonShape polygonShape = new PolygonShape();
 	private final CircleShape circleShape = new CircleShape();
 	private final Vector2 vec = new Vector2();
-
-	// -------------------------------------------------------------------------
-	// Ctors
-	// -------------------------------------------------------------------------
 
 	public BodyEditorLoader(FileHandle file) {
 		if (file == null) throw new NullPointerException("file is null");
@@ -45,15 +36,11 @@ public class BodyEditorLoader {
 		model = readJson(str);
 	}
 
-	// -------------------------------------------------------------------------
-	// Public API
-	// -------------------------------------------------------------------------
-
 	/**
 	 * Creates and applies the fixtures defined in the editor. The name
 	 * parameter is used to retrieve the right fixture from the loaded file.
 	 * <br/><br/>
-	 *
+	 * <p>
 	 * The body reference point (the red cross in the tool) is by default
 	 * located at the bottom left corner of the image. This reference point
 	 * will be put right over the BodyDef position point. Therefore, you should
@@ -62,28 +49,30 @@ public class BodyEditorLoader {
 	 * at the position of your body, you will need to know this reference point
 	 * (see {@link #getOrigin(java.lang.String, float)}.
 	 * <br/><br/>
-	 *
+	 * <p>
 	 * Also, saved shapes are normalized. As shown in the tool, the width of
 	 * the image is considered to be always 1 meter. Thus, you need to provide
 	 * a scale factor so the polygons get resized according to your needs (not
 	 * every body is 1 meter large in your game, I guess).
 	 *
-	 * @param body The Box2d body you want to attach the fixture to.
-	 * @param name The name of the fixture you want to load.
-	 * @param fd The fixture parameters to apply to the created body fixture.
+	 * @param body  The Box2d body you want to attach the fixture to.
+	 * @param name  The name of the fixture you want to load.
+	 * @param fd    The fixture parameters to apply to the created body fixture.
 	 * @param scale The desired scale of the body. The default width is 1.
 	 */
 	public void attachFixture(Body body, String name, FixtureDef fd, float scale) {
 		RigidBodyModel rbModel = model.rigidBodies.get(name);
 		if (rbModel == null) throw new RuntimeException("Name '" + name + "' was not found.");
 
+		// TODO: Verify correct, updated method from mul to scl
 		Vector2 origin = vec.set(rbModel.origin).scl(scale);
 
-		for (int i=0, n=rbModel.polygons.size(); i<n; i++) {
+
+		for (int i = 0, n = rbModel.polygons.size(); i < n; i++) {
 			PolygonModel polygon = rbModel.polygons.get(i);
 			Vector2[] vertices = polygon.buffer;
 
-			for (int ii=0, nn=vertices.length; ii<nn; ii++) {
+			for (int ii = 0, nn = vertices.length; ii < nn; ii++) {
 				vertices[ii] = newVec().set(polygon.vertices.get(ii)).scl(scale);
 				vertices[ii].sub(origin);
 			}
@@ -92,12 +81,12 @@ public class BodyEditorLoader {
 			fd.shape = polygonShape;
 			body.createFixture(fd);
 
-            for (Vector2 vertex : vertices) {
-                free(vertex);
-            }
+			for (int ii = 0, nn = vertices.length; ii < nn; ii++) {
+				free(vertices[ii]);
+			}
 		}
 
-		for (int i=0, n=rbModel.circles.size(); i<n; i++) {
+		for (int i = 0, n = rbModel.circles.size(); i < n; i++) {
 			CircleModel circle = rbModel.circles.get(i);
 			Vector2 center = newVec().set(circle.center).scl(scale);
 			float radius = circle.radius * scale;
@@ -143,10 +132,6 @@ public class BodyEditorLoader {
 		return model;
 	}
 
-	// -------------------------------------------------------------------------
-	// Json Models
-	// -------------------------------------------------------------------------
-
 	public static class Model {
 		public final Map<String, RigidBodyModel> rigidBodies = new HashMap<String, RigidBodyModel>();
 	}
@@ -169,14 +154,10 @@ public class BodyEditorLoader {
 		public float radius;
 	}
 
-	// -------------------------------------------------------------------------
-	// Json reading process
-	// -------------------------------------------------------------------------
-
 	private Model readJson(String str) {
-		Model m = new Model();
-		JsonValue map = new JsonReader().parse(str);
+		Model model = new Model();
 
+		JsonValue map = new JsonReader().parse(str);
 
 		for (JsonValue rbJson = map.getChild("rigidBodies"); rbJson != null; rbJson = rbJson.next()) {
 			RigidBodyModel rbModel = readRigidBody(rbJson);
@@ -226,10 +207,6 @@ public class BodyEditorLoader {
 
 		return rbModel;
 	}
-
-	// -------------------------------------------------------------------------
-	// Helpers
-	// -------------------------------------------------------------------------
 
 	private Vector2 newVec() {
 		return vectorPool.isEmpty() ? new Vector2() : vectorPool.remove(0);

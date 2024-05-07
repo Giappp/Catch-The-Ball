@@ -3,7 +3,6 @@ package object;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Ball {
     private float speed;

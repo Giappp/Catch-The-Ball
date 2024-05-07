@@ -26,19 +26,19 @@ public class MainMenuScreen implements Screen {
         labelStyle.font = MyGame.bigFont;
         Label title = new Label("Catch The Ball",labelStyle);
         title.setAlignment(Align.center);
-        title.setY(Gdx.graphics.getHeight() * 2/3);
+        title.setY((float) (Gdx.graphics.getHeight() * 2) /3);
         title.setWidth(Gdx.graphics.getWidth());
         stage.addActor(title);
 
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = MyGame.smallFont;
         TextButton playButton = new TextButton("Play Game",buttonStyle);
-        playButton.setPosition(Gdx.graphics.getWidth() / 2 - playButton.getWidth() / 2,
-                Gdx.graphics.getHeight() / 2 - playButton.getHeight() / 2);
+        playButton.setPosition((float) Gdx.graphics.getWidth() / 2 - playButton.getWidth() / 2,
+                (float) Gdx.graphics.getHeight() / 2 - playButton.getHeight() / 2);
         playButton.addListener(new InputListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new GameScreen(game));
+                game.setScreen(new GameScreenNew(game));
             }
 
             @Override
@@ -49,9 +49,9 @@ public class MainMenuScreen implements Screen {
         stage.addActor(playButton);
 
         TextButton optionsButton = new TextButton("Options",buttonStyle);
-        optionsButton.setWidth(Gdx.graphics.getWidth() / 2);
-        optionsButton.setPosition(Gdx.graphics.getWidth() / 2 - optionsButton.getWidth() / 2,
-                Gdx.graphics.getHeight() / 4 - optionsButton.getHeight() / 2);
+        optionsButton.setWidth((float) Gdx.graphics.getWidth() / 2);
+        optionsButton.setPosition((float) Gdx.graphics.getWidth() / 2 - optionsButton.getWidth() / 2,
+                (float) Gdx.graphics.getHeight() / 4 - optionsButton.getHeight() / 2);
         optionsButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {

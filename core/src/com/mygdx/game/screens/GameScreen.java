@@ -2,6 +2,7 @@ package com.mygdx.game.screens;
 
 import java.util.Iterator;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -14,11 +15,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.MyGame;
 import object.Ball;
+import object.CatchPlayField;
 
 public class GameScreen implements Screen {
     private static final float DEFAULT_SPEED = 200;
@@ -35,11 +40,14 @@ public class GameScreen implements Screen {
     OrthographicCamera camera;
     ShapeRenderer shapeRenderer;
     Rectangle catchField;
+    private CatchPlayField catchPlayField;
+    private World world;
     Array<Ball> balls;
     long lastDropTime;
     int dropsGathered;
 
     public GameScreen(final Game game) {
+
         this.game = game;
 
         shapeRenderer = new ShapeRenderer();
