@@ -41,10 +41,10 @@ public class CatchPlayField extends Image {
         super.act(delta);
         int speedModifier = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) ? 2 : 1;
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            catcher.x -= catcherSpeed * speedModifier * Gdx.graphics.getDeltaTime();
+            catcher.x -= catcherSpeed * speedModifier * delta;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            catcher.x += catcherSpeed * speedModifier * Gdx.graphics.getDeltaTime();
+            catcher.x += catcherSpeed * speedModifier * delta;
         }
 
         if (catcher.x < 0) {

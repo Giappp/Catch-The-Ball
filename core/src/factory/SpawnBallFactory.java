@@ -11,8 +11,8 @@ public class SpawnBallFactory {
     public static Array<Ball> spawnBall(int total, int delay){
         Array<Ball> balls = new Array<>();
         for(int i = 1; i <= total; i++){
-            Ball ball = new Ball(MathUtils.random(64,
-                    Gdx.graphics.getWidth() - 64),Gdx.graphics.getHeight(), 64,
+            Ball ball = new Ball(MathUtils.random(200+64,
+                    1720 - 64),1080, 64,
                     i * 1000 * MathUtils.random(1,delay));
             balls.add(ball);
         }
@@ -32,8 +32,10 @@ public class SpawnBallFactory {
             if(distanceToHyper < 0){
                 currentBall.hyperDashTarget = nextBall;
             }else{
+                currentBall.hasHyper = true;
                 currentBall.distanceToHyperDash = distanceToHyper;
             }
+            balls.set(i,currentBall);
         }
         return balls;
     }

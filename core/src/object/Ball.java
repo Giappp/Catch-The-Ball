@@ -11,14 +11,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 public class Ball extends Image {
     private static final float speed = 600;
     private float radius;
-    public final Circle ball;
+    public Circle ball;
     // start time in millisecond
     public float startTime;
     public boolean hasHyper;
     public Ball hyperDashTarget;
     public float distanceToHyperDash;
     public boolean catched;
-    public float delay;
     public Size size;
 
     public enum Size{
@@ -29,26 +28,29 @@ public class Ball extends Image {
     public Ball(float x,float y, float radius,float startTime) {
         super(new Texture("fruit-drop.png"));
         ball = new Circle(x,y,radius);
-        this.setPosition(ball.x, ball.y);
         this.startTime = startTime;
+        this.setBounds(ball.x, ball.y, ball.radius, ball.radius);
+        setPosition(ball.x, ball.y);
     }
 
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
+        getDrawable().draw(batch,ball.x - ball.radius, ball.y - ball.radius, ball.radius * 2, ball.radius * 2);
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
-        while (ball.y > 0){
-            ball.y -= speed;
-            this.setPosition(ball.x, ball.y);
-            if(ball.y == 0){
-                remove();
-            }
+        ball.y -= (speed * delta);
+        setWidth(ball.radius * 2);
+        setHeight(ball.radius * 2);
+        setPosition(ball.x - ball.radius, ball.y - ball.radius);
+        if(ball.y <= 0){
+            remove();
         }
+
     }
     @Override
     public void drawDebug(ShapeRenderer shapes) {
