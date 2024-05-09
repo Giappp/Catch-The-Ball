@@ -77,10 +77,10 @@ public class GameScreen implements Screen {
     }
 
     private void spawnBall() {
-        Ball ball = new Ball();
-        ball.setStartPosition(MathUtils.random(0, Gdx.graphics.getWidth() - 64),Gdx.graphics.getHeight());
-        ball.setRadius(64);
-        ball.setSpeed(200);
+        Ball ball = new Ball(MathUtils.random(0, Gdx.graphics.getWidth() - 64),Gdx.graphics.getHeight(),64,1000);
+//        ball.setStartPosition(MathUtils.random(0, Gdx.graphics.getWidth() - 64),Gdx.graphics.getHeight());
+//        ball.setRadius(64);
+//        ball.setSpeed(200);
         balls.add(ball);
         lastDropTime = TimeUtils.nanoTime();
     }
@@ -105,9 +105,7 @@ public class GameScreen implements Screen {
         batch.begin();
         MyGame.smallFont.draw(batch, "Drops Collected: " + dropsGathered, 0, 800);
         batch.draw(catcherImage, catchField.x, catchField.y, catchField.width, catchField.height);
-        for (Ball ball : balls) {
-            batch.draw(dropImage, ball.getStartPosition().x, ball.getStartPosition().y);
-        }
+
         batch.end();
 
         if (Gdx.input.isKeyPressed(Keys.LEFT)) {
@@ -139,6 +137,7 @@ public class GameScreen implements Screen {
             spawnBall();
 
         Iterator<Ball> iter = balls.iterator();
+        /*
         while (iter.hasNext()) {
             Ball ball = iter.next();
             ball.getStartPosition().y -= ball.getSpeed() * Gdx.graphics.getDeltaTime();
@@ -152,7 +151,7 @@ public class GameScreen implements Screen {
 //                dropSound.play();
                 iter.remove();
             }
-        }
+        }*/
     }
 
     @Override
