@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.MyGame;
@@ -12,16 +13,15 @@ import factory.SpawnBallFactory;
 import object.Ball;
 import object.CatchPlayField;
 
-import java.util.Iterator;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class GameScreenNew extends ApplicationAdapter implements Screen {
 
     private final Stage stage;
     private final Game game;
     private final CatchPlayField catchPlayField;
-    Array<Ball> balls;
+    private final ConcurrentLinkedQueue<Ball> spawnedBalls;
     private final OrthographicCamera camera;
     public GameScreenNew(Game game){
         this.game = game;
@@ -31,19 +31,9 @@ public class GameScreenNew extends ApplicationAdapter implements Screen {
         stage = new Stage(new ScreenViewport());
         catchPlayField = new CatchPlayField();
         stage.addActor(catchPlayField);
-        balls = new Array<>();
-        Array<Ball> ballArray = SpawnBallFactory.spawnBall(100,2);
-        for(Ball ball : ballArray){
-            new Timer().schedule(
-                    new TimerTask() {
-                        @Override
-                        public void run() {
-                            balls.add(ball);
-                        }
-                    }
-                    , (long) ball.delay);
-        }
+        spawnedBalls = new ConcurrentLinkedQueue<>();
     }
+
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
@@ -57,6 +47,23 @@ public class GameScreenNew extends ApplicationAdapter implements Screen {
                 return false;
             }
         });
+        Array<Ball> mapObjects = SpawnBallFactory.spawnBall(100,2);
+        System.out.println(mapObjects.size);
+        for(Ball ball : mapObjects){
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            spawnBall(ball);
+                        }
+                    },
+                    (long) ball.startTime
+            );
+        }
+    }
+
+    private void spawnBall(Ball ball) {
+        spawnedBalls.add(ball);
     }
 
     @Override
@@ -64,26 +71,22 @@ public class GameScreenNew extends ApplicationAdapter implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         camera.update();
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.draw();
-        stage.act(Gdx.graphics.getDeltaTime());
         ShapeRenderer shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         catchPlayField.drawDebug(shapeRenderer); // Draw the catcher rectangle
-        for(Iterator<Ball> iter = balls.iterator(); iter.hasNext(); ){
+        for(Iterator<Ball> iter = spawnedBalls.iterator(); iter.hasNext();){
             Ball ball = iter.next();
             stage.addActor(ball);
-            if(ball.ball.y + ball.ball.radius < 0) iter.remove();
-            if(catchPlayField.overLaps(ball.ball)){
+            ball.drawDebug(shapeRenderer);
+            if(catchPlayField.overLaps(ball.ball)) {
                 iter.remove();
+                ball.remove();
             }
         }
         shapeRenderer.end();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
+        stage.draw();
+        stage.act(Gdx.graphics.getDeltaTime());
     }
 
     @Override
@@ -104,5 +107,6 @@ public class GameScreenNew extends ApplicationAdapter implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        Gdx.app.exit();
     }
 }
