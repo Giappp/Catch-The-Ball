@@ -4,12 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class CatchPlayField extends Image {
     public static final float catcherSpeed = 800;
@@ -17,10 +20,21 @@ public class CatchPlayField extends Image {
     // y default position for the sprite
     private static float DEFAULT_Y_POSITION;
     public final Rectangle catcher;
+    private final Texture playerTexture;
+    private final Texture playerLeftTexture;
+//    private ParticleEffect effect;
+    private boolean isSpeedUp;
+    private int speedModifier;
 
 
     public CatchPlayField(){
         super(new Texture("player.png"));
+        playerTexture = new Texture("player.png");
+        playerLeftTexture = new Texture("player-left.png");
+
+//        effect = new ParticleEffect();
+//        effect.load(Gdx.files.internal("effect/default.p"),Gdx.files.internal("effect"));
+
         catcher = new Rectangle();
         catcher.width = getWidth();
         catcher.height = getHeight() / 6f;
@@ -29,24 +43,35 @@ public class CatchPlayField extends Image {
         DEFAULT_Y_POSITION = - catcher.height / 2f;
         //this.setBounds(catcher.x,catcher.y,catcher.width,catcher.height);
         this.setPosition(catcher.x,DEFAULT_Y_POSITION);
+//        effect.start();
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
+//        if(isSpeedUp){
+//            effect.draw(batch);
+//        }
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
-        int speedModifier = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) ? 2 : 1;
+        speedModifier = 1;
+        if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)){
+            isSpeedUp = true;
+            speedModifier = 2;
+        }else{
+            isSpeedUp = false;
+        }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             catcher.x -= catcherSpeed * speedModifier * delta;
+            setDrawable(new SpriteDrawable(new Sprite(playerLeftTexture)));
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             catcher.x += catcherSpeed * speedModifier * delta;
+            setDrawable(new SpriteDrawable(new Sprite(playerTexture)));
         }
-
         if (catcher.x < 0) {
             catcher.x = 0;
         }
@@ -54,6 +79,8 @@ public class CatchPlayField extends Image {
             catcher.x = Gdx.graphics.getWidth() - catcher.width;
         }
         setPosition(catcher.x,DEFAULT_Y_POSITION);
+//        effect.setPosition(catcher.x + 130,133);
+//        effect.update(delta);
     }
     @Override
     public void drawDebug(ShapeRenderer shapes) {

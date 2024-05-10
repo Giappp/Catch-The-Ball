@@ -16,8 +16,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.MyGame;
 
 public class MainMenuScreen implements Screen {
-    private Stage stage;
-    private Game game;
+    private final Stage stage;
+    private final Game game;
 
     public MainMenuScreen(final MyGame gam) {
         game = gam;
@@ -51,7 +51,7 @@ public class MainMenuScreen implements Screen {
         TextButton optionsButton = new TextButton("Options",buttonStyle);
         optionsButton.setWidth((float) Gdx.graphics.getWidth() / 2);
         optionsButton.setPosition((float) Gdx.graphics.getWidth() / 2 - optionsButton.getWidth() / 2,
-                (float) Gdx.graphics.getHeight() / 4 - optionsButton.getHeight() / 2);
+                (float) Gdx.graphics.getHeight() / 2  - optionsButton.getHeight() / 2 - 100);
         optionsButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -63,6 +63,23 @@ public class MainMenuScreen implements Screen {
             }
         });
         stage.addActor(optionsButton);
+
+        TextButton quitButton = new TextButton("Quit", buttonStyle);
+        quitButton.setWidth((float) Gdx.graphics.getWidth() / 2);
+        quitButton.setPosition((float) Gdx.graphics.getWidth() / 2 - quitButton.getWidth() / 2,
+                (float) Gdx.graphics.getHeight() / 2 - quitButton.getHeight() / 2 - 200);
+        quitButton.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.exit(); // Quit the application
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+        stage.addActor(quitButton);
     }
 
     @Override

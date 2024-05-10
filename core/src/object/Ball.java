@@ -4,20 +4,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class Ball extends Image {
     private static final float speed = 600;
-    private float radius;
     public Circle ball;
     // start time in millisecond
     public float startTime;
     public boolean hasHyper;
     public Ball hyperDashTarget;
     public float distanceToHyperDash;
-    public boolean catched;
     public Size size;
 
     public enum Size{

@@ -4,8 +4,6 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
@@ -23,7 +21,7 @@ public class GameScreenNew extends ApplicationAdapter implements Screen {
     private final Stage stage;
     private final Game game;
     private final CatchPlayField catchPlayField;
-    private ConcurrentLinkedQueue<Ball> spawnedBalls;
+    private final ConcurrentLinkedQueue<Ball> spawnedBalls;
     private final OrthographicCamera camera;
     public GameScreenNew(Game game){
         this.game = game;
@@ -82,18 +80,13 @@ public class GameScreenNew extends ApplicationAdapter implements Screen {
             stage.addActor(ball);
             ball.drawDebug(shapeRenderer);
             if(catchPlayField.overLaps(ball.ball)) {
-                ball.remove();
                 iter.remove();
+                ball.remove();
             }
         }
         shapeRenderer.end();
         stage.draw();
         stage.act(Gdx.graphics.getDeltaTime());
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
     }
 
     @Override
@@ -114,11 +107,6 @@ public class GameScreenNew extends ApplicationAdapter implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-    }
-    private void debugBall(){
-        for(Ball b:spawnedBalls){
-            System.out.println(spawnedBalls.size());
-            System.out.println(b.toString());
-        }
+        Gdx.app.exit();
     }
 }
