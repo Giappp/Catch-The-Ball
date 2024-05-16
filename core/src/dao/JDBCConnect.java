@@ -1,7 +1,5 @@
 package dao;
 
-import dao.IDBConfig;
-
 import java.sql.*;
 
 public class JDBCConnect {
@@ -59,8 +57,6 @@ public class JDBCConnect {
     }
     
     public static void main(String[] args) {
-        
         System.out.println(JDBCConnect.getJDBCConnection());
-        
     }
 }

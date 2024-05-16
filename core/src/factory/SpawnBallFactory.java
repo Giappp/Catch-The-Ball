@@ -13,7 +13,7 @@ public class SpawnBallFactory {
         for(int i = 1; i <= total; i++){
             Ball ball = new Ball(MathUtils.random(200+64,
                     1720 - 64),1080, 64,
-                    i * 1000 * MathUtils.random(1f,delay));
+                    i * 1000 * MathUtils.random(0.25f,delay));
             balls.add(ball);
         }
         return CalculateHyperDash(balls);
